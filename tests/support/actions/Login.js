@@ -2,7 +2,7 @@ import exp from 'constants'
 
 const {expect} = require ('@playwright/test')
 
-export class LoginPage{
+export class Login{
 
     constructor(page){
 
@@ -10,6 +10,11 @@ export class LoginPage{
 
     }
 
+    async do(email, password, userName){
+        await this.visit()
+        await this.submit(email, password)
+        await this.isLoggedIn(userName)
+    }
     async visit(){
         
         await this.page.goto('http://localhost:3000/admin/login')
@@ -17,6 +22,12 @@ export class LoginPage{
         const loginForm = this.page.locator('.login-form')
 
         await expect(loginForm).toBeVisible()
+    }
+
+    async isLoggedIn(userName){
+        const loggedUser = this.page.locator('.logged-user')
+
+        await expect(loggedUser).toHaveText(`Olá, ${userName}`)
     }
 
     async submit (email, password){
@@ -28,7 +39,7 @@ export class LoginPage{
         await this.page.getByText('Entrar').click()
     }
 
-    async alertLoginHaveText(text){
+    async alertHaveText(text){
             const alert = this.page.locator('span[class$=alert]')
     
             await expect(alert).toHaveText(text)

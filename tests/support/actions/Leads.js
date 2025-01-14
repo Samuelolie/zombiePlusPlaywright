@@ -1,6 +1,6 @@
 const { expect } = require('@playwright/test')
 
-export class LandingPage {
+export class Leads {
 
     constructor(page) {
         this.page = page
@@ -29,11 +29,5 @@ export class LandingPage {
 
         await this.page.getByTestId('modal')
             .getByText('Quero entrar na fila!').click()
-    }
-
-    async alertHaveText(target) {
-
-        await expect(this.page.locator('.alert')).toHaveText(target)
-
     }
 }

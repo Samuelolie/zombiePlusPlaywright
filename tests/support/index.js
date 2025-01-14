@@ -1,22 +1,33 @@
 const { test: base, expect } = require('@playwright/test')
 
-const {LoginPage} = require('../pages/loginPage')
-const {LandingPage} = require('../pages/landingPage')
-const { MoviesPage } = require('../pages/moviePage')
-const {Toast} = require('../pages/Components')
+const { Login } = require('./actions/Login')
+const { Leads } = require('./actions/Leads')
+const { Movies } = require('./actions/Movies')
+const {Popup} = require('./actions/Components')
+const { Api } = require('./Api/index.js')
 
 const test = base.extend({
     page : async ({page}, use) =>{
          
-        await use({
-            ...page,
-            landing: new LandingPage(page),
-            login: new LoginPage(page),
-            movies: new MoviesPage(page),
-            toast: new Toast(page)
-        })
+        const context = page
+        
+        context ['leads'] = new Leads(page)
+        context ['login'] = new Login(page)
+        context ['movies'] = new Movies(page)
+        context ['popup'] = new Popup(page)
+        
+        await use(context)
+    },
     
-    } 
+    request : async({request}, use) =>{
+        
+        const context = request
+
+        context ['api'] = new Api(request)
+        await context ['api'].setToken()
+
+        await use(context)
+    }
 })
 
 export { test, expect }
